@@ -61,6 +61,6 @@ with open('comp.p2p', 'r', newline='') as ips:
         
         outputLines.append(firstIpFormatted+"-"+secondIpFormatted+",000,"+comment)
 
-with open('compFormated.p2p', 'w') as f:
+with open('compFormated.dat', 'w') as f:
     for line in outputLines:
          f.write(line+"\n")
