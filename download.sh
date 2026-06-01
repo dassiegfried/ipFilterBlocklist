@@ -82,3 +82,5 @@ sed '/^[[:space:]]*$/d' comp.p2p
 sed -i '/^\s*$/d' comp.p2p
 #grep -v '^\s*$' comp.p2p > comp.p2p
 #cat comp.p2p | grep -v '^\s*$' > comp.p2p
+
+python3 format.py
