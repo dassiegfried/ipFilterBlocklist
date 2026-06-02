@@ -1,4 +1,6 @@
 import ipaddress
+import csv
+
 
 outputLines=[]
 with open('israelCIDR.txt', 'r', newline='') as cidr:
@@ -7,9 +9,20 @@ with open('israelCIDR.txt', 'r', newline='') as cidr:
         allIps=[str(ip) for ip in ipaddress.IPv4Network(line)]
         with open('comp.p2p', 'a') as f:
             f.write("ISRAEL:"+str(allIps[0])+"-"+str(allIps[len(allIps)-1])+"\n")
-        
+
+with open('GeoLite2-Country-Blocks-IPv4.csv', 'r', newline='') as geo:
+    spamreader = csv.reader(geo, delimiter=',', quotechar='`')
+    for row in spamreader:
+        if row[1] == "294640":
+            allIps=[str(ip) for ip in ipaddress.IPv4Network(row[0])]
+            with open('comp.p2p', 'a') as f:
+                f.write("ISRAEL_Geo:"+str(allIps[0])+"-"+str(allIps[len(allIps)-1])+"\n")
+
+alreadyReadIpRange=[]
+ii=0
 with open('comp.p2p', 'r', newline='') as ips:
     for line in ips:
+        ii=ii+1
         if("#" in line):
             #ignore commented out lines
             continue
@@ -20,6 +33,12 @@ with open('comp.p2p', 'r', newline='') as ips:
         if len(line.split(":")) != 2:
             #comment includes ":" instead of dealing with these 2 cases we skip them
             continue
+        if ipRange in alreadyReadIpRange:
+            #skip duplicates
+            continue
+        if ii % 8:
+            print(ipRange)
+        alreadyReadIpRange.append(ipRange)
         firstIP=ipRange.split("-")[0]
         firstIpPartsInOrder=[]
         for part in firstIP.split("."):
